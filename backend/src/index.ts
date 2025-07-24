@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import cors from "cors";
 
 import { dbConnect } from "./config/db.js";
+import userRoutes from "./routes/user.route.js"
 
 // express instance
 const app = express();
@@ -15,10 +16,9 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-// get request
-app.get("/", (_req:Request, res:Response)=>{
-    res.status(200).json({success: true, message:"Hello World!"})
-})
+// routes
+app.use('/api/v1', userRoutes)
+
 
 // run the server
 const port = process.env.PORT || 5000;
