@@ -1,7 +1,7 @@
 {
-  "name": "todo-assignment-backend",
+  "name": "todo-assessment-backend",
   "version": "1.0.0",
-  "description": "Collaborative real time todo assignment.",
+  "description": "Collaborative real time todo assessment.",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
