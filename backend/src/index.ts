@@ -3,6 +3,7 @@ import cors from "cors";
 
 import { dbConnect } from "./config/db.js";
 import userRoutes from "./routes/user.route.js"
+import todoRoutes from "./routes/todo.route.js"
 
 // express instance
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.urlencoded({extended: true}))
 
 // routes
 app.use('/api/v1', userRoutes)
+app.use('/api/v1', todoRoutes)
 
 
 // run the server
