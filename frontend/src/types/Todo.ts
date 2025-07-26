@@ -1,8 +1,7 @@
 export type TaskStatus = "pending" | "in-progress" | "completed";
 
 export interface Task {
-  _id: string
-  id: string
+  _id?: string
   title: string
   description?: string
   status: TaskStatus
@@ -15,13 +14,14 @@ export interface Task {
 }
 
 export interface User {
-  _id: string
+  id: string
+  _id?: string
   name: string
-  email: string
-  password: string
-  avatar?: string
-  isOnline?: boolean
-  color?: string
+  email?: string
+  password?: string
+  avatar: string
+  isOnline: boolean
+  color: string
 }
 
 

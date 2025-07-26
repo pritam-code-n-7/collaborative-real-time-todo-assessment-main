@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post('/user/auth/signup', async(req, res)=>{
     try {
-        const {name, email, password} = req.body;
+        const {name, email, password, avatar, color} = req.body;
 
         const user = await User.findOne({ email });
         if(user){
@@ -17,7 +17,7 @@ router.post('/user/auth/signup', async(req, res)=>{
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        const userModel = new User({name, email, password: hashedPassword})
+        const userModel = new User({name, email, password: hashedPassword, avatar, color})
         const data = await userModel.save();
 
         console.log(data);
@@ -44,7 +44,7 @@ router.post('/user/auth/login', async(req, res)=>{
         }
 
         const jwtToken = jwt.sign(
-            {email: user.email, _id: user._id, name: user.name},
+            {email: user.email, _id: user._id, name: user.name, isOnline: true},
             process.env.JWT_SECRET as string,
             {expiresIn: '10d'}
         )
@@ -56,7 +56,8 @@ router.post('/user/auth/login', async(req, res)=>{
             jwtToken,
             _id: user._id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            isOnline: true
         })
         
     } catch (error) {

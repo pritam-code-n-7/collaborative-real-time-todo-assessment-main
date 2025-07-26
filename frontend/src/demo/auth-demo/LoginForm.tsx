@@ -57,6 +57,7 @@ const LoginForm = () => {
         localStorage.setItem('_id', res.data._id)
         localStorage.setItem('name', res.data.name)
         localStorage.setItem('email', res.data.email)
+        localStorage.setItem('isOnline', res.data.isOnline)
         toast.success(message)
         navigate('/dashboard')
       }

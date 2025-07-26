@@ -31,7 +31,11 @@ import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import type { User } from "@/types/Todo";
+import type { Task, User } from "@/types/Todo";
+
+interface AddTaskForm {
+  onAddTask: (task: Task) => Promise<void>;
+}
 
 const fetcher = (url:string)=> axios.get(url).then((res)=>res.data)
 
@@ -42,7 +46,7 @@ const formSchema = z.object({
   assignedTo: z.string().optional(),
 });
 
-const AddTaskForm = () => {
+const AddTaskForm = ({ onAddTask }: AddTaskForm) => {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,11 +81,8 @@ const AddTaskForm = () => {
       createdBy: author,
     }
     try {
-      const res = await axios.post(import.meta.env.VITE_TODO_URL, payload);
-      console.log(res.data);
-      const { message } = res.data;
+      await onAddTask(payload)
       form.reset()
-      toast.success(message);
     } catch (error: unknown) {
       console.error(error);
       let message = "An error occurred";

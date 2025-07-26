@@ -20,6 +20,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Mail, Lock, User } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { passwordValidation } from "@/lib/helpers";
@@ -29,7 +36,9 @@ import { toast } from "sonner";
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.email('Please enter a valid email.').trim(),
-  password: z.string().trim().min(6, 'Password is too short.').regex(passwordValidation, 'Your password is not valid.')
+  password: z.string().trim().min(6, 'Password is too short.').regex(passwordValidation, 'Your password is not valid.'),
+  avatar: z.string().nonempty(),
+  color: z.string().nonempty(),
 });
 
 const SignupForm = () => {
@@ -40,6 +49,8 @@ const SignupForm = () => {
       name: "",
       email:"",
       password:"",
+      avatar:"👤",
+      color:"bg-blue-500",
     },
   });
 
@@ -51,8 +62,15 @@ const SignupForm = () => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    const payload={
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      avatar: values.avatar,
+      color: values.color
+    }
     try {
-      const res = await axios.post(import.meta.env.VITE_SIGNUP_URL, values)
+      const res = await axios.post(import.meta.env.VITE_SIGNUP_URL, payload)
       console.log(res.data);
       const {message} = res.data;
       toast.success(message)
@@ -152,6 +170,66 @@ const SignupForm = () => {
                 </FormItem>
               )}
             />
+             <FormField
+                control={form.control}
+                name="avatar"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Avatar</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={"👤"}>👤</SelectItem>
+                          <SelectItem value={"👩"}>👩</SelectItem>
+                          <SelectItem value={"👨"}>👨</SelectItem>
+                          <SelectItem value={"👩‍💼"}>👩‍💼</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="color"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Color</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={"bg-blue-500"}>
+                            <div className="bg-blue-500 w-5 h-5 rounded-full border"/>
+                          </SelectItem>
+                          <SelectItem value={"bg-green-500"}>
+                            <div className="bg-green-500 w-5 h-5 rounded-full border"/>
+                          </SelectItem>
+                          <SelectItem value={"bg-purple-500"}>
+                            <div className="bg-purple-500 w-5 h-5 rounded-full border"/>
+                          </SelectItem>
+                          <SelectItem value={"bg-orange-500"}>
+                            <div className="bg-orange-500 w-5 h-5 rounded-full border"/>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={isSubmitting}>

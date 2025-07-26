@@ -8,10 +8,18 @@ import { Edit2, Trash2, Save, X, Clock, UserIcon } from "lucide-react"
 import { useState } from "react"
 import { mockUsers } from "@/data/Todo"
 
+interface TaskItem{
+  status: string
+  title: string
+  desc: string
+  assignedTo: string
+  createdAt: Date
+  createdBy: string
+}
 
-export function TaskItem() {
+export function TaskItem({status, title, desc, assignedTo, createdAt, createdBy}:TaskItem) {
     const [isEditing, setIsEditing] = useState(false)
-
+    
   return (
     <Card
       className={"transition-all duration-200 hover:shadow-md ring-2 ring-orange-200 dark:ring-orange-800"}
@@ -35,18 +43,18 @@ export function TaskItem() {
             <div className="flex-1 min-w-0">
               {isEditing ? (
                 <Input
-                value={"Design new landing page"}
+                  value={title}
                   className="text-lg font-semibold"
                   placeholder="Task title"
                 />
               ) : (
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{"Design new landing page"}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{title}</h3>
               )}
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
               <Badge className={"bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"}>
-                {"In Progress"}
+                {status}
               </Badge>
 
               {!isEditing && (
@@ -72,12 +80,12 @@ export function TaskItem() {
             <div>
               {isEditing ? (
                 <Textarea
-                value={"Create wireframes and mockups for the new product landing page"}
+                value={desc}
                   placeholder="Task description (optional)"
                   className="min-h-[80px]"
                 />
               ) : (
-                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{"Create wireframes and mockups for the new product landing page"}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{desc}</p>
               )}
             </div>
           )}
@@ -87,7 +95,7 @@ export function TaskItem() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
-                <Select value="pending">
+                <Select value={status}>
                   <SelectTrigger className="w-full">
                     <SelectValue/>
                   </SelectTrigger>
@@ -126,13 +134,13 @@ export function TaskItem() {
 
                 <div className="flex items-center gap-1">
                   <UserIcon className="h-3 w-3" />
-                  <span>{"pritam"}</span>
+                  <span>{assignedTo}</span>
                 </div>
 
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 <span>
-                  Created by {"Pritam"} • {new Date().toLocaleDateString()}
+                  Created by {createdBy} • {createdAt.toLocaleDateString()}
                 </span>
               </div>
             </div>
