@@ -26,21 +26,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Plus, Loader2 } from "lucide-react";
-import { useNavigate } from "react-router";
-import { passwordValidation } from "@/lib/helpers";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
-import { mockUsers } from "@/data/Todo";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+import type { User } from "@/types/Todo";
+
+const fetcher = (url:string)=> axios.get(url).then((res)=>res.data)
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  email: z.email("Please enter a valid email.").trim(),
-  password: z
-    .string()
-    .trim()
-    .min(6, "Password is too short.")
-    .regex(passwordValidation, "Your password is not valid."),
+  title: z.string().min(3, "Title must be at least 3 characters."),
+  description: z.string().optional(),
+  status: z.enum(['pending', 'in-progress', 'completed']),
+  assignedTo: z.string().optional(),
 });
 
 const AddTaskForm = () => {
@@ -48,26 +47,41 @@ const AddTaskForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
+      title: "",
+      description: "",
+      status: "pending",
+      assignedTo: "",
     },
   });
 
-  const navigate = useNavigate();
+    const [author, setAuthor] = useState("")
+    const {data:userData } = useSWR<User[]>(import.meta.env.VITE_USER_URL, fetcher)
+
+  // Handle fetch user session
+  useEffect(()=>{
+    setAuthor(localStorage.getItem('name') || '')
+  },[])
 
   // Handle form status
   const { isSubmitting } = form.formState;
+  const isTitle = form.watch('title')
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    const payload = {
+      title: values.title,
+      description: values.description,
+      status: values.status,
+      assignedTo: values.assignedTo,
+      createdBy: author,
+    }
     try {
-      const res = await axios.post(import.meta.env.VITE_SIGNUP_URL, values);
+      const res = await axios.post(import.meta.env.VITE_TODO_URL, payload);
       console.log(res.data);
       const { message } = res.data;
+      form.reset()
       toast.success(message);
-      navigate("/login");
     } catch (error: unknown) {
       console.error(error);
       let message = "An error occurred";
@@ -92,7 +106,7 @@ const AddTaskForm = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Task Title *</FormLabel>
@@ -112,7 +126,7 @@ const AddTaskForm = () => {
 
             <FormField
               control={form.control}
-              name="name"
+              name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</FormLabel>
@@ -132,7 +146,7 @@ const AddTaskForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="status"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</FormLabel>
@@ -158,7 +172,7 @@ const AddTaskForm = () => {
 
               <FormField
                 control={form.control}
-                name="name"
+                name="assignedTo"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Assign to</FormLabel>
@@ -168,19 +182,19 @@ const AddTaskForm = () => {
                         value={field.value}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue />
+                          <SelectValue placeholder='Assign'/>
                         </SelectTrigger>
                         <SelectContent>
-                          {mockUsers.map((user) => (
-                            <SelectItem key={user.id} value={user.id}>
+                          {userData?.map((user:User) => (
+                            <SelectItem key={user._id} value={user.name}>
                               <div className="flex items-center gap-2">
-                                <span>{user.avatar}</span>
+                                {/* <span>{user.avatar}</span> */}
                                 <span>{user.name}</span>
-                                {user.id === "1" && (
+                                {/* {user.id === "1" && (
                                   <span className="text-xs text-gray-500">
                                     (You)
                                   </span>
-                                )}
+                                )} */}
                               </div>
                             </SelectItem>
                           ))}
@@ -196,7 +210,7 @@ const AddTaskForm = () => {
             <Button
               type="submit"
               className="w-full"
-              disabled={isSubmitting}
+              disabled={!isTitle || isSubmitting}
             >
               {isSubmitting ? (
                 <>

@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge"
 export function StatusFilter() {
   const filters = [
     { key: "all" as const, label: "All Tasks", count: 2 },
-    { key: "pending", label: "Pending", count: 1 },
-    { key: "in-progress", label: "In Progress", count: 1 },
+    { key: "pending", label: "Pending", count: 0 },
+    { key: "in-progress", label: "In Progress", count: 2 },
     { key: "completed", label: "Completed", count: 0 },
   ]
 
