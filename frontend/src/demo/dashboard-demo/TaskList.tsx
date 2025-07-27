@@ -1,8 +1,12 @@
 import type { Task } from "@/types/Todo";
 import { TaskItem } from "./TaskItem";
 
+interface TaskList{
+  todo: Task[],
+  onDeleteTask: (id: string) => Promise<void>
+}
 
-export function TaskList({ todo }: { todo: Task[] }) {
+export function TaskList({ todo, onDeleteTask }:TaskList) {
 
     if (todo?.length === 0) {
       return (
@@ -33,6 +37,7 @@ export function TaskList({ todo }: { todo: Task[] }) {
               assignedTo={todo.assignedTo ?? ''} 
               createdBy= {todo.createdBy}
               createdAt={todo.createdAt ? new Date(todo.createdAt) : new Date()}
+              onDeleteTask={() => onDeleteTask(todo._id ?? '')}
               />))
         }
       </div>

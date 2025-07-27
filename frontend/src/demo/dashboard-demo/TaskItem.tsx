@@ -15,9 +15,10 @@ interface TaskItem{
   assignedTo: string
   createdAt: Date
   createdBy: string
+  onDeleteTask:()=>Promise<void>
 }
 
-export function TaskItem({status, title, desc, assignedTo, createdAt, createdBy}:TaskItem) {
+export function TaskItem({status, title, desc, assignedTo, createdAt, createdBy, onDeleteTask}:TaskItem) {
     const [isEditing, setIsEditing] = useState(false)
     
   return (
@@ -65,7 +66,7 @@ export function TaskItem({status, title, desc, assignedTo, createdAt, createdBy}
                   <Button
                     variant="ghost"
                     size="sm"
-                    // onClick={() => onDeleteTask(task.id)}
+                    onClick={onDeleteTask}
                     className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
                   >
                     <Trash2 className="h-4 w-4" />

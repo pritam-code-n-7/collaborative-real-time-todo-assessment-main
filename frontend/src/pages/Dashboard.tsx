@@ -20,7 +20,12 @@ const Dashboard = () => {
     console.log(res.data);
     const { message } = res.data;
     toast.success(message);
+    mutate();
+  };
 
+    const handleDeleteTask = async (todoId:string) => {
+    const res = await axios.delete(`${import.meta.env.VITE_TODO_URL}/${todoId}`);
+    console.log(res.data);
     mutate();
   };
 
@@ -58,7 +63,7 @@ const Dashboard = () => {
 
           {/* Task List */}
           <div className="lg:col-span-2">
-            <TaskList todo={todoData ?? []} />
+            <TaskList todo={todoData ?? []} onDeleteTask={handleDeleteTask}/>
           </div>
         </div>
       </div>
