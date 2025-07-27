@@ -16,7 +16,7 @@ const server = createServer(app)
 const io = new Server(server, {
     cors:{
         // origin: process.env.FE_URL
-        origin: process.env.LIVE_FE_URL
+        origin: 'https://todo-collab-peach.vercel.app'
     }
 })
 
