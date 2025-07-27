@@ -1,11 +1,10 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
 const mongoUri = process.env.MONGO_URI;
 const dbName = process.env.DB_NAME;
 
-if(!mongoUri || !dbName){
-    throw new Error('missing mongouri and dbname.')
-}
 
 export const dbConnect = async()=>{
     try {

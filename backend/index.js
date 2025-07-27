@@ -2,11 +2,13 @@ import express from "express";
 import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io"
+import dotenv from "dotenv";
 
-import { dbConnect } from "./config/db.js";
 import userRoutes from "./routes/user.route.js"
 import todoRoutes from "./routes/todo.route.js"
+import { dbConnect } from "./config/db.js";
 import { setupSocket } from "./socket.js";
+dotenv.config();
 
 // express instance
 const app = express();
@@ -14,6 +16,7 @@ const server = createServer(app)
 const io = new Server(server, {
     cors:{
         origin: process.env.FE_URL
+        // origin: process.env.LIVE_FE_URL
     }
 })
 

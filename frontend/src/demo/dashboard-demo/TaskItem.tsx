@@ -152,7 +152,7 @@ export function TaskItem({status, title, desc, assignedTo, createdAt, createdBy,
                   <Save className="h-3 w-3 mr-1" />
                   Save
                 </Button>
-                <Button size="sm" variant="outline" className="h-8 bg-transparent">
+                <Button size="sm" variant="outline" className="h-8 bg-transparent" onClick={()=>setIsEditing(false)}>
                   <X className="h-3 w-3 mr-1" />
                   Cancel
                 </Button>
